@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="build_sdk" default="debug" basedir=".">
+	<property file="${basedir}/project.properties"></property>
+	
+	<import file="${sdk.dir}/tools/ant/build.xml"/>
+	
+	<target name="-pre-clean">
+		<delete dir="${basedir}/bin/aar_temp"></delete>
+	</target>
+	
+	<target name="-pre-build">
+		<echo>start process aar!!!</echo>
+		<mkdir dir="${basedir}/bin/aar_temp"/>
+		<mkdir dir="${basedir}/bin/classes"/>
+		<unzip dest="${basedir}/bin/aar_temp" src="${basedir}/aar/aarlibrary-debug.aar"/>
+		<echo>第一步，拷贝class文件</echo>
+		<unzip dest="${basedir}/bin/classes" src="${basedir}/bin/aar_temp/classes.jar"/>		
+		
+		<echo>第二步，重命名资源文件</echo>
+		<rename src="${basedir}/bin/aar_temp/res/values/values.xml" dest="${basedir}/bin/aar_temp/res/values/aar_values.xml"/>
+		<rename src="${basedir}/bin/aar_temp/res/values/strings.xml" dest="${basedir}/bin/aar_temp/res/values/aar_strings.xml"/>
+		
+		<echo>第三步，拷贝资源文件</echo>
+		<copydir src="${basedir}/bin/aar_temp/res" dest="${basedir}/res"></copydir>
+		
+	</target>
+	
+	<target name="-pre-compile">
+		<copy file="${basedir}/gen/com/example/mergeaar/R.java" tofile="${basedir}/gen/com/example/yx/aarlibrary/R.java"></copy>
+		<replace file ="${basedir}/gen/com/example/yx/aarlibrary/R.java" token="package com.example.mergeaar;" value="package com.example.yx.aarlibrary;"/>
+	</target>
+	
+</project>
